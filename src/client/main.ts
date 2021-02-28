@@ -6,8 +6,6 @@ import {
   establishConnection,
   establishPayer,
   loadProgram,
-  sayHello,
-  reportHellos,
 } from './vote';
 
 async function main() {
@@ -21,12 +19,6 @@ async function main() {
 
   // Load the program if not already loaded
   await loadProgram();
-
-  // Say hello to an account
-  await sayHello();
-
-  // Find out how many times that account has been greeted
-  await reportHellos();
 
   console.log('Success');
 }

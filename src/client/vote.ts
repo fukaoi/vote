@@ -119,7 +119,6 @@ export async function loadProgram(): Promise<void> {
   }
 
   // Load the program
-  console.log('Loading hello world program...');
   const data = await fs.readFile(pathToProgram);
   const programAccount = new Account();
   await BpfLoader.load(
