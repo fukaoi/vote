@@ -44,7 +44,7 @@ let programId: PublicKey;
  */
 let greetedPubkey: PublicKey;
 
-const pathToProgram = 'dist/program/helloworld.so';
+const pathToProgram = '../programs/target/deploy/programs.so';
 
 /**
  * Layout of the greeted account data

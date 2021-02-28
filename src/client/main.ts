@@ -8,7 +8,7 @@ import {
   loadProgram,
   sayHello,
   reportHellos,
-} from './hello_world';
+} from './vote';
 
 async function main() {
   console.log("Let's say hello to a Solana account...");
