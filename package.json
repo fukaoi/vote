@@ -1,10 +1,10 @@
 {
-  "name": "helloworld",
+  "name": "vote",
   "version": "0.0.1",
   "description": "",
   "repository": {
     "type": "git",
-    "url": "https://github.com/solana-labs/example-helloworld"
+    "url": "https://github.com/fukaoi/vote"
   },
   "keywords": [],
   "author": "",
