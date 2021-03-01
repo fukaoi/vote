@@ -114,10 +114,7 @@ export async function loadProgram(): Promise<void> {
     await connection.getAccountInfo(programId);
     console.log('Program already loaded to account', programId.toBase58());
     return;
-  } catch (err) {
-    // try to load the program
-    console.error(err);
-  }
+  } catch (err) {}
 
   // Load the program
   const data = await fs.readFile(pathToProgram);
@@ -176,14 +173,15 @@ export async function callVote(): Promise<void> {
     programId,
     data: Buffer.alloc(0), // All instructions are hellos
   });
-  await sendAndConfirmTransaction(
+  const res = await sendAndConfirmTransaction(
     connection,
     new Transaction().add(instruction),
     [payerAccount],
     {
       commitment: 'singleGossip',
-      preflightCommitment: 'singleGossip',
     },
   );
+
+  console.log(res);
 }
 

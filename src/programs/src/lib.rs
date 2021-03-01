@@ -18,10 +18,10 @@ fn process_instruction(
     accounts: &[AccountInfo],
     instruction_data: &[u8],
 ) -> ProgramResult {
-    msg!("Rust program entrypoint");
+    msg!("[lib.rs]Rust program entrypoint");
 
     let accounts_iter = &mut accounts.iter();
     let account = next_account_info(accounts_iter)?;
-    msg!("{:?}", account); 
+    msg!("program_id: {}", program_id);
     Ok(())
 }
