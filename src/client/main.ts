@@ -3,24 +3,24 @@
  */
 
 import {
+  callVote,
   establishConnection,
   establishPayer,
   loadProgram,
 } from './vote';
 
 async function main() {
-  console.log("Let's say hello to a Solana account...");
-
-  // Establish connection to the cluster
+  console.log("---- establishConnection ----");
   await establishConnection();
 
-  // Determine who pays for the fees
+  console.log("---- establishPayer      ----");
   await establishPayer();
 
-  // Load the program if not already loaded
+  console.log("---- loadProgram         ----");
   await loadProgram();
 
-  console.log('Success');
+  console.log("---- callVote            ----");
+  await callVote();
 }
 
 main().then(

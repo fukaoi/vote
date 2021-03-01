@@ -42,7 +42,7 @@ let programId: PublicKey;
 /**
  * The public key of the account we are saying hello to
  */
-let greetedPubkey: PublicKey;
+let pubkey: PublicKey;
 
 const pathToProgram = 'src/programs/target/deploy/programs.so';
 
@@ -110,12 +110,13 @@ export async function loadProgram(): Promise<void> {
   try {
     const config = await store.load('config.json');
     programId = new PublicKey(config.programId);
-    greetedPubkey = new PublicKey(config.greetedPubkey);
+    pubkey = new PublicKey(config.greetedPubkey);
     await connection.getAccountInfo(programId);
     console.log('Program already loaded to account', programId.toBase58());
     return;
   } catch (err) {
     // try to load the program
+    console.error(err);
   }
 
   // Load the program
@@ -133,8 +134,8 @@ export async function loadProgram(): Promise<void> {
 
   // Create the greeted account
   const greetedAccount = new Account();
-  greetedPubkey = greetedAccount.publicKey;
-  console.log('Creating account', greetedPubkey.toBase58(), 'to say hello to');
+  pubkey = greetedAccount.publicKey;
+  console.log('Creating account', pubkey.toBase58(), 'to say hello to');
   const space = greetedAccountDataLayout.span;
   const lamports = await connection.getMinimumBalanceForRentExemption(
     greetedAccountDataLayout.span,
@@ -142,7 +143,7 @@ export async function loadProgram(): Promise<void> {
   const transaction = new Transaction().add(
     SystemProgram.createAccount({
       fromPubkey: payerAccount.publicKey,
-      newAccountPubkey: greetedPubkey,
+      newAccountPubkey: pubkey,
       lamports,
       space,
       programId,
@@ -162,18 +163,16 @@ export async function loadProgram(): Promise<void> {
   await store.save('config.json', {
     url: urlTls,
     programId: programId.toBase58(),
-    greetedPubkey: greetedPubkey.toBase58(),
+    greetedPubkey: pubkey.toBase58(),
   });
 }
 
 /**
- * Say hello
+ * 
  */
-export async function sayHello(): Promise<void> {
-  console.warn('GreetedAccount', greetedPubkey);
-  console.log('Saying hello to', greetedPubkey.toBase58());
+export async function callVote(): Promise<void> {
   const instruction = new TransactionInstruction({
-    keys: [{pubkey: greetedPubkey, isSigner: false, isWritable: true}],
+    keys: [{pubkey: pubkey, isSigner: false, isWritable: true}],
     programId,
     data: Buffer.alloc(0), // All instructions are hellos
   });
@@ -188,19 +187,3 @@ export async function sayHello(): Promise<void> {
   );
 }
 
-/**
- * Report the number of times the greeted account has been said hello to
- */
-export async function reportHellos(): Promise<void> {
-  const accountInfo = await connection.getAccountInfo(greetedPubkey);
-  if (accountInfo === null) {
-    throw 'Error: cannot find the greeted account';
-  }
-  const info = greetedAccountDataLayout.decode(Buffer.from(accountInfo.data));
-  console.log(
-    greetedPubkey.toBase58(),
-    'has been greeted',
-    info.numGreets.toString(),
-    'times',
-  );
-}
