@@ -182,6 +182,6 @@ export async function callVote(): Promise<void> {
     },
   );
 
-  console.log(res);
+  console.log(`callVote result: ${res}`);
 }
 

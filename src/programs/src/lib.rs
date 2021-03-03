@@ -18,11 +18,46 @@ fn process_instruction(
     accounts: &[AccountInfo],
     instruction_data: &[u8],
 ) -> ProgramResult {
-    msg!("[lib.rs]Rust program entrypoint");
-
     let accounts_iter = &mut accounts.iter();
     let account = next_account_info(accounts_iter)?;
+    
+    if account.owner != program_id {
+        msg!("this account is not program_id account");
+        return Err(ProgramError::IncorrectProgramId);
+    } 
+
+    // The data must be large enough to hold two u32 vote counts
+    // in the next (slightly more complicated) version of the
+    // program we will use solana_sdk::program_pack::Pack
+    // to retrieve and deserialise the account data
+    // and to check it is the correct length
+    // for now, realise it's literally just 8 bytes of data.
+    
+    if account.try_data_len()? < 2 * mem::size_of::<u32>() {
+        msg!("Vote account data length tool small for u32");
+        return Err(ProgramError::InvalidAccountData);
+    }
+
     msg!("program_id: {}", program_id);
-    msg!("account: {:#?}", account);
+    msg!("account.owner: {:#?}", account.owner);
+    msg!("account.key: {:#?}", account.key);
+
+    // let data = account.try_borrow_data()?;
+    let mut data = account.try_borrow_mut_data()?;
+
+    if 1 == instruction_data[0] {
+        let vc = LittleEndian::read_u32(&data[0..4]);
+        // increment by 1. voted
+        LittleEndian::write_u32(&mut data[0..4], vc + 1);
+        msg!("Voted for candidate1");
+    }
+
+    if 2 == instruction_data[0] {
+        let vc = LittleEndian::read_u32(&data[4..8]);
+        // increment by 2. voted
+        LittleEndian::write_u32(&mut data[4..8], vc + 1);
+        msg!("Voted for candidate2");
+    }
+
     Ok(())
 }
