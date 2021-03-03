@@ -20,11 +20,11 @@ fn process_instruction(
 ) -> ProgramResult {
     let accounts_iter = &mut accounts.iter();
     let account = next_account_info(accounts_iter)?;
-    
+
     if account.owner != program_id {
         msg!("this account is not program_id account");
         return Err(ProgramError::IncorrectProgramId);
-    } 
+    }
 
     // The data must be large enough to hold two u32 vote counts
     // in the next (slightly more complicated) version of the
@@ -32,7 +32,7 @@ fn process_instruction(
     // to retrieve and deserialise the account data
     // and to check it is the correct length
     // for now, realise it's literally just 8 bytes of data.
-    
+
     if account.try_data_len()? < 2 * mem::size_of::<u32>() {
         msg!("Vote account data length tool small for u32");
         return Err(ProgramError::InvalidAccountData);
@@ -60,4 +60,38 @@ fn process_instruction(
     }
 
     Ok(())
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    use solana_program::clock::Epoch;
+
+    #[test]
+
+    fn test_sanity() {
+        let program_id = Pubkey::default();
+        let key = Pubkey::default();
+        let mut lamports = 0;
+
+        let mut data = vec![0; 2 * mem::size_of::<u32>()];
+        LittleEndian::write_u32(&mut data[0..4], 0);
+        LittleEndian::write_u32(&mut data[4..8], 0);
+
+        let owner = Pubkey::default();
+        let account = AccountInfo::new(
+            &key,
+            false,
+            true,
+            &mut lamports,
+            &mut data,
+            &owner,
+            false,
+            Epoch::default(),
+        );
+        
+        let mut instruction_data: Vec<u8> = vec![0];
+        let accounts = vec![account];
+        assert_eq!(LittleEndian::read_u32(&accounts[0].data.borrow()[0..4]), 0);
+    }
 }
