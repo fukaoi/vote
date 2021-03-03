@@ -10,7 +10,7 @@ type Config = {[key: string]: string};
 
 export class Store {
   static getDir(): string {
-    return path.join(__dirname, 'store');
+    return path.join(__dirname, '../../../');
   }
 
   async load(uri: string): Promise<Config> {

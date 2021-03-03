@@ -12,8 +12,8 @@
   "scripts": {
     "start": "ts-node src/client/main.ts",
     "clean": "rm -rf ./src/client/util/store/config.json && rm -rf ./src/programs/target/deploy/",
-    "build:programs": "cargo build-bpf --manifest-path=./src/programs/Cargo.toml",
-    "test:program-rust": "cargo test-bpf --manifest-path=./src/program-rust/Cargo.toml",
+    "build:rust": "cargo build-bpf --manifest-path=./src/programs/Cargo.toml",
+    "test:rust": "cargo test-bpf --manifest-path=./src/program-rust/Cargo.toml",
     "postinstall": "cargo update --manifest-path=src/programs/Cargo.toml"
   },
   "devDependencies": {

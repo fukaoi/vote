@@ -23,5 +23,6 @@ fn process_instruction(
     let accounts_iter = &mut accounts.iter();
     let account = next_account_info(accounts_iter)?;
     msg!("program_id: {}", program_id);
+    msg!("account: {:#?}", account);
     Ok(())
 }
