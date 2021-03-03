@@ -93,5 +93,20 @@ mod test {
         let mut instruction_data: Vec<u8> = vec![0];
         let accounts = vec![account];
         assert_eq!(LittleEndian::read_u32(&accounts[0].data.borrow()[0..4]), 0);
+        assert_eq!(LittleEndian::read_u32(&accounts[0].data.borrow()[4..8]), 0);
+
+        // vote for candidate 1
+        
+        instruction_data[0] = 1;
+        process_instruction(&program_id, &accounts, &instruction_data).unwrap();
+        assert_eq!(LittleEndian::read_u32(&accounts[0].data.borrow()[0..4]), 1);
+        assert_eq!(LittleEndian::read_u32(&accounts[0].data.borrow()[4..8]), 0);
+
+        // vote for candidate 2
+        
+        instruction_data[0] = 2;
+        process_instruction(&program_id, &accounts, &instruction_data).unwrap();
+        assert_eq!(LittleEndian::read_u32(&accounts[0].data.borrow()[0..4]), 1);
+        assert_eq!(LittleEndian::read_u32(&accounts[0].data.borrow()[4..8]), 1);
     }
 }
